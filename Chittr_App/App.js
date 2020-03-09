@@ -36,9 +36,9 @@ class App extends Component{
         
         })
         })
-        .then((response) => response.json()).then((responeJson) => {
-          this.setState({authCode : responeJson.token});
-          console.log(responeJson)
+        .then((response) => response.json()).then((responseJson) => {
+          this.setState({authCode : responseJson.token});
+          console.log(responseJson)
         }).catch((error) => {
         console.error(error);
         });
@@ -64,7 +64,7 @@ class App extends Component{
      <View style={styles.btnContainer}>
       <TouchableOpacity
         style={styles.btn}
-        
+        onPress={this.Login}
       >
         <Text style={styles.btnText}>Log In</Text>
       </TouchableOpacity>
@@ -134,4 +134,4 @@ const AppTabNav = createBottomTabNavigator({
  
  const AppContainer = createAppContainer(AppTabNav)
 
- export default App;
+ export default AppContainer;
