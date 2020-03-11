@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
   class Register extends Component {
 
@@ -16,6 +16,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
   
     
     Register = () => {
+      console.log(this.state.email + "  " + this.state.password + " " + this.state.name + " " + this.state.surname);
+
       return fetch("http://10.0.2.2:3333/api/v0.0.5/user",
         {
           method: 'POST',
@@ -24,15 +26,20 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
           },
   
           body: JSON.stringify({
+            given_name: this.state.name,
+            family_name: this.state.surname,
             email: this.state.email,
-            password: this.state.password,
-            name: this.state.name,
-            surname: this.state.surname
+            password: this.state.password
           })
         })
-        .then((response) => response.json()).then((responseJson) => {
-          this.setState({ authCode: responseJson.token });
-          console.log(responseJson)
+        .then((response) => {
+          if(response.status === 201){
+            Alert.alert("Account created!")
+            this.props.navigation.navigate("LogIn");
+          }
+          else{
+            Alert.alert("An error occured!")
+          }
         }).catch((error) => {
           console.error(error);
         });

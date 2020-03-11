@@ -31,7 +31,7 @@ class Login extends Component {
           })
         })
         .then((response) =>{ 
-          if(response.status == 200){
+          if(response.status === 200){
             this.props.navigation.navigate('Home')
           }
           else{

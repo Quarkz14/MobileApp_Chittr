@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     container : {
        flex: 1,
        alignItems: "center",
-       backgroundColor: '#54CBFF'
+       backgroundColor: '#8BD5C7'
     },
    title : { 
       fontSize: 50,   
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
       fontSize:16,
       paddingBottom: 10,
       paddingLeft:10,
-      backgroundColor: "#38B0DE",
+      backgroundColor: "#EDF8F6",
       borderStyle: "solid",
         borderColor: "#000000"
     } 
