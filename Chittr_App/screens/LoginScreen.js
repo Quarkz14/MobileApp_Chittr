@@ -12,6 +12,7 @@ class Login extends Component {
         surname: '',
         authCode: ''
       }
+      global.authCode = this.state.authCode;
     }
   
     Login = () => {
@@ -31,7 +32,7 @@ class Login extends Component {
         })
         .then((response) =>{ 
           if(response.status == 200){
-            () => {this.props.navigation.navigate('Home')}
+            this.props.navigation.navigate('Home')
           }
           else{
             Alert.alert("Email or Password is invalid")
