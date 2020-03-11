@@ -26,13 +26,16 @@ const styles = StyleSheet.create({
     viewFlatList : {
         flexDirection: "column",
         justifyContent: "center",
-        width: "90%",
+        width: "90%"
+        
     },
     textChit: {
       fontSize:16,
       paddingBottom: 10,
       paddingLeft:10,
-      backgroundColor: "#38B0DE"
+      backgroundColor: "#38B0DE",
+      borderStyle: "solid",
+        borderColor: "#000000"
     } 
    
    
