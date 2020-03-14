@@ -5,8 +5,7 @@ class ProfileScreen extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            suname: ''
+            
         } 
     }
     static navigationOptions = {
@@ -19,6 +18,7 @@ class ProfileScreen extends Component{
                 
                     global.name = responseJson.given_name;
                     global.surname = responseJson.family_name;
+                    global.email = responseJson.email;
                 console.log(responseJson.given_name);
                 console.log(responseJson.family_name);
                 

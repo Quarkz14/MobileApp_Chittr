@@ -38,7 +38,7 @@ class Login extends Component {
           else{
             Alert.alert("Email or Password is invalid")
           }
-          return response.json()
+          return response.json();
         }
         ).then((responseJson) => {
            global.token = responseJson.token;

@@ -20,7 +20,7 @@ class PostScreen extends Component{
     constructor(props){
         super(props);
         this.state = {
-            chit: '',
+            chit_content: '',
             user: []
         }
     }
@@ -40,8 +40,19 @@ class PostScreen extends Component{
             },
     
             body: JSON.stringify({
-              chit: this.state.chit,
-              user: [global.id, global.name , global.surname]
+             chit_id: 0,
+             timestamp: 0,
+             chit_content: this.state.chit_content,
+             location:{
+                 longitude: 0,
+                 latitude: 0
+             },
+             user: {
+                "user_id": global.id,
+                "given_name": global.name,
+                "family_name": global.surname,
+                "email": global.email
+            }
               
             })
           })
@@ -56,13 +67,13 @@ class PostScreen extends Component{
             console.error(error);
           });
       }
-      
+
     render(){
     return(
     <View>
         <View style = {styles.text}>
         <Text> IMG </Text>
-    <Text>{global.name}{' '}{global.surname}</Text>
+        <Text>{global.name}{' '}{global.surname}</Text>
         </View>
     
     <TextInput 
@@ -70,10 +81,10 @@ class PostScreen extends Component{
         multiline={true}
         numberOfLines={3}
         maxLength = {141}
-        onChangeText = {(text) => this.setState({chit:text})}
-        value = {this.state.chit}
+        onChangeText = {(text) => this.setState({chit_content:text})}
+        value = {this.state.chit_content}
     />
-    <Text>Characters Left: {this.state.chit.length}/141</Text>
+    <Text>Characters Left: {this.state.chit_content.length}/141</Text>
     <Text>Maximum 141 characters</Text>
     <TouchableOpacity
         onPress={this.Chit}
