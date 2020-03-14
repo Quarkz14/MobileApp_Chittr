@@ -1,5 +1,19 @@
 import React, { Component } from 'react';
-import { Text, View,Button } from 'react-native';
+import { Text, View,TouchableOpacity,StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+    
+    tabInfo: {
+        justifyContent: "space-around",
+        flexDirection: "row"
+        
+
+    },
+    logoutBtn: {
+        backgroundColor: '#3AA18D'
+    }
+   
+  });
 
 class FPanelScreen extends Component{
     static navigationOptions = {
@@ -7,9 +21,14 @@ class FPanelScreen extends Component{
        }
     render(){
     return(
-    <View>
-    <Text>FPanel Screen</Text>
-
+        <View style={styles.tabInfo}>
+        <Text>IMG {global.name}{' '}{global.surname}</Text>
+        <TouchableOpacity
+            style={styles.logoutBtn}
+            onPress={this.logout}
+        >
+            <Text>Log out</Text>
+        </TouchableOpacity>
     </View>
     );
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, } from 'react-native';
 
 class Login extends Component {
 
@@ -7,16 +7,12 @@ class Login extends Component {
       super(props);
       this.state = {
         email: '',
-        password: '',
-        name: '',
-        surname: '',
-        authCode: '',
-        id: ''
+        password: ''
       }
     
     }
   
-    Login = () => {
+    Login =  async () => {
       console.log(this.state.email + "  " + this.state.password);
   
       return fetch("http://10.0.2.2:3333/api/v0.0.5/login",
@@ -43,7 +39,7 @@ class Login extends Component {
         ).then((responseJson) => {
            global.token = responseJson.token;
            global.id = responseJson.id;
-          console.log(responseJson);
+          console.log(global.id + '  '+ global.token);
         }).catch((error) => {
           console.error(error);
         });

@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const styles = StyleSheet.create({
     text : {
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         width: "100%",
         borderStyle:"solid",
         borderRadius: 1
@@ -12,6 +12,23 @@ const styles = StyleSheet.create({
     btnText: {
         backgroundColor: '#3AA18D',
         width: "15%"
+    },
+    view : {
+        backgroundColor: '#8BD5C7',
+        flex: 1
+    },
+    textInput: {
+        backgroundColor: '#fff',
+        width: '60%'
+    },
+    tabInfo: {
+        justifyContent: "space-around",
+        flexDirection: "row"
+        
+
+    },
+    logoutBtn: {
+        backgroundColor: '#3AA18D'
     }
    
    
@@ -21,14 +38,16 @@ class PostScreen extends Component{
         super(props);
         this.state = {
             chit_content: '',
-            user: []
+            user: [],
+            name: '',
+            surname: ''
         }
     }
     static navigationOptions = {
         header: null
        }
 
-       Chit = () => {
+       Chit = async () => {
         console.log(this.state.chit);
     
         return fetch("http://10.0.2.2:3333/api/v0.0.5/chits",
@@ -67,16 +86,45 @@ class PostScreen extends Component{
             console.error(error);
           });
       }
+      logout = () => {
+        return fetch("http://10.0.2.2:3333/api/v0.0.5/logout",
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': global.token
+            }
+
+          })
+          .then((response) =>{ 
+            if(response.status === 200){
+                this.props.navigation.navigate("LogIn")
+                Alert.alert("Acount logged out!")
+            }else{
+                Alert.alert("Account not logged out")
+            }
+          }
+          ).catch((error) => {
+            console.error(error);
+          });
+    }
+    
 
     render(){
     return(
-    <View>
-        <View style = {styles.text}>
-        <Text> IMG </Text>
-        <Text>{global.name}{' '}{global.surname}</Text>
-        </View>
+    <View style={styles.view}>
+        <View style={styles.tabInfo}>
+                    <Text>IMG {global.name}{' '}{global.surname}</Text>
+                    <TouchableOpacity
+                        style={styles.logoutBtn}
+                        onPress={this.logout}
+                    >
+                        <Text>Log out</Text>
+                    </TouchableOpacity>
+                </View>
     
     <TextInput 
+        style={styles.textInput}
         placeholder="Post a chitt...."
         multiline={true}
         numberOfLines={3}
@@ -85,7 +133,7 @@ class PostScreen extends Component{
         value = {this.state.chit_content}
     />
     <Text>Characters Left: {this.state.chit_content.length}/141</Text>
-    <Text>Maximum 141 characters</Text>
+    
     <TouchableOpacity
         onPress={this.Chit}
     >
@@ -95,4 +143,5 @@ class PostScreen extends Component{
     );
     }
    }
+
    export default PostScreen;

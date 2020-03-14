@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet, AsyncStorage } from 'react-native';
+import { Text, View, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet,Alert } from 'react-native';
 
 const styles = StyleSheet.create({
     container : {
@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
       fontWeight: "bold" 
     },
     ScrollViewContainer : {
-       width: "90%",
+       width: "95%",
+       height: "95%",
        padding: 20
        
     },
@@ -36,8 +37,16 @@ const styles = StyleSheet.create({
       backgroundColor: "#EDF8F6",
       borderStyle: "solid",
         borderColor: "#000000"
-    } 
-   
+    },
+    tabInfo: {
+        justifyContent: "space-around",
+        flexDirection: "row"
+        
+
+    },
+    logoutBtn: {
+        backgroundColor: '#3AA18D'
+    }
    
   });
 
@@ -72,7 +81,7 @@ class HomeScreen extends Component {
         }
     }
 */
-    getChits = () => {
+    getChits =   () => {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/chits')
             .then((response) => response.json())
             .then((responseJson) => {
@@ -87,8 +96,47 @@ class HomeScreen extends Component {
     }
     componentDidMount() {
         this.getChits();
+        this.getUserInfo();
     }
+    getUserInfo = () => {
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + global.id)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                
+                    global.name = responseJson.given_name;
+                    global.surname = responseJson.family_name;
+                    global.email = responseJson.email;
+                console.log(global.name);
+                console.log(global.surname);
+                
+            }).catch((error) => {
+                console.log(error);
+            });
+    }
+    
+    logout = () => {
+        return fetch("http://10.0.2.2:3333/api/v0.0.5/logout",
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': global.token
+            }
 
+          })
+          .then((response) =>{ 
+            if(response.status === 200){
+                this.props.navigation.navigate("LogIn")
+                Alert.alert("Acount logged out!")
+            }else{
+                Alert.alert("Account not logged out")
+            }
+          }
+          ).catch((error) => {
+            console.error(error);
+          });
+    }
+    
     render() {
         if (this.state.isLoading) {
             return (
@@ -99,6 +147,16 @@ class HomeScreen extends Component {
         }
         return (
             <View style={styles.container}>
+                <View style={styles.tabInfo}>
+                    <Text>IMG {global.name}{' '}{global.surname}</Text>
+                    <TouchableOpacity
+                        style={styles.logoutBtn}
+                        onPress={this.logout}
+                    >
+                        <Text>Log out</Text>
+                    </TouchableOpacity>
+                </View>
+                
                 <View style={styles.ScrollViewContainer}>
                 <FlatList
                     data={this.state.chitsListData}
