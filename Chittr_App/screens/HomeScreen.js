@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet } from 'react-native';
+import { Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet, AsyncStorage } from 'react-native';
 
 const styles = StyleSheet.create({
     container : {
@@ -46,14 +46,32 @@ class HomeScreen extends Component {
         super(props);
         this.state = {
             chitsListData: [],
-            isLoading: true
+            isLoading: true,
+            authCode: '',
+            id: ''
         }
+
     }
 
     static navigationOptions = {
         header: null
     }
+    /*
+    _retrieveData = async () => {
+        try{
+            const token = await AsyncStorage.getItem('token');
+            const id  = await AsyncStorage.getItem('id');
 
+            if(token !== null && id !== null) {
+                this.setState({authCode: token});
+                this.setState({id: id});
+                console.log(token + "  " + id);
+            }
+        }catch(error) {
+            console.log(error);
+        }
+    }
+*/
     getChits = () => {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/chits')
             .then((response) => response.json())
@@ -62,7 +80,7 @@ class HomeScreen extends Component {
                     isLoading: false,
                     chitsListData: responseJson,
                 });
-                console.log(responseJson)
+                
             }).catch((error) => {
                 console.log(error);
             });
@@ -81,7 +99,7 @@ class HomeScreen extends Component {
         }
         return (
             <View style={styles.container}>
-                <ScrollView style={styles.ScrollViewContainer}>
+                <View style={styles.ScrollViewContainer}>
                 <FlatList
                     data={this.state.chitsListData}
                     renderItem={({ item }) => (
@@ -93,8 +111,8 @@ class HomeScreen extends Component {
                     keyExtractor={item => item.chit_id}
 
                 />
-                </ScrollView>
-
+                </View>
+            
             </View>
         );
     }

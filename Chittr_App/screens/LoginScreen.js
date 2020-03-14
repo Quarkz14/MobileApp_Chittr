@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
 
 class Login extends Component {
 
@@ -10,9 +10,10 @@ class Login extends Component {
         password: '',
         name: '',
         surname: '',
-        authCode: ''
+        authCode: '',
+        id: ''
       }
-      global.authCode = this.state.authCode;
+    
     }
   
     Login = () => {
@@ -40,15 +41,24 @@ class Login extends Component {
           return response.json()
         }
         ).then((responseJson) => {
-          this.setState({ authCode: responseJson.token });
-          console.log(responseJson)
+           global.token = responseJson.token;
+           global.id = responseJson.id;
+          console.log(responseJson);
         }).catch((error) => {
           console.error(error);
         });
     }
-  
-   
-  
+  /*
+    _storeData = async () => {
+      try {
+        await AsyncStorage.setItem('token', authCode);
+        await AsyncStorage.setItem('id', id);
+      
+      }catch(error){
+        console.log(error);
+      }
+    }
+  */
     render() {
       return (
         <View style={styles.container}>
