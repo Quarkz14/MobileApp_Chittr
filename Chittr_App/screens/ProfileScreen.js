@@ -4,6 +4,7 @@ import { createStackNavigator} from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
 import UpdateScreen from './UpdateScreen'
 import AsyncStorage from '@react-native-community/async-storage';
+import { FlatList } from 'react-native-gesture-handler';
 const styles = StyleSheet.create({
     
     tabInfo: {
@@ -18,12 +19,8 @@ const styles = StyleSheet.create({
    
   });
 
-  const ProfileActions = createStackNavigator ({
-    UpdateInfo : {
-        screen: UpdateScreen
-    }
-  })
-const UpdateStack = createAppContainer(ProfileActions);
+  
+
 class ProfileScreen extends Component{
     constructor(props) {
         super(props);
@@ -66,7 +63,20 @@ class ProfileScreen extends Component{
             });
           }
     
-
+          getUserChits = () => {
+            return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                
+                    this.setState({name: responseJson.given_name});
+                    this.setState({surname: responseJson.family_name});
+                    this.setState({email: responseJson.email});
+                    this.storeUserData();
+                console.log('user info ' + this.state.name + '  ' + this.state.surname + ' ' + this.state.email);
+            }).catch((error) => {
+                console.log(error);
+            });
+          }
     storeUserData = async () => {
       try{
 
@@ -103,14 +113,14 @@ class ProfileScreen extends Component{
     }
     
     componentDidMount() {
-     // this.logout();
-      this.getUserInfo();
       this.retrieveLoginData();
+      this.getUserInfo();
       this.storeUserData();
     }
-    
+  
     render(){
     return(
+      <View>
         <View style={styles.tabInfo}>
         <Text>IMG {this.state.name}{' '}{this.state.surname}</Text>
         <TouchableOpacity
@@ -119,11 +129,32 @@ class ProfileScreen extends Component{
         >
             <Text>Log out</Text>
         </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('UpdateInfo')}
+        ><Text>Update Account</Text></TouchableOpacity>
+        <FlatList
+        
+        
+        
+        />
     </View>
     );
     }
     
 }
 
+const ProfileActions = createStackNavigator ({
+  UpdateInfo : {
+      screen: UpdateScreen
+  },
+  ProfileScreen : {
+    screen: ProfileScreen
+  }
+},
+  {
+    initialRouteName: 'ProfileScreen'
+})
+const ProfileStack = createAppContainer(ProfileActions);
 
-   export default ProfileScreen;
+   export default ProfileStack;

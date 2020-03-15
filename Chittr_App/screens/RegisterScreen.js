@@ -9,8 +9,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'reac
         email: '',
         password: '',
         name: '',
-        surname: '',
-        authCode: ''
+        surname: ''
+        
       }
     }
   
