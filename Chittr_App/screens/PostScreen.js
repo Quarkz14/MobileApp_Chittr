@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View,TextInput,StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage';
+
 const styles = StyleSheet.create({
     text : {
         flexDirection: "row",
@@ -33,6 +35,7 @@ const styles = StyleSheet.create({
    
    
   });
+
 class PostScreen extends Component{
     constructor(props){
         super(props);
@@ -40,14 +43,36 @@ class PostScreen extends Component{
             chit_content: '',
             user: [],
             name: '',
-            surname: ''
+            surname: '',
+            id: '',
+            token: '',
+            email: ''
         }
     }
     static navigationOptions = {
         header: null
        }
 
-       Chit = async () => {
+       retrieveUserInfo = async() => {
+           try{
+               const id = await AsyncStorage.getItem('id',(error,item) => console.log( ' post id: ' + item));
+               const token = await AsyncStorage.getItem('token',(error,item) => console.log( ' post token: ' + item));
+               const name = await AsyncStorage.getItem('name',(error,item) => console.log( ' post name: ' + item));
+               const surname = await AsyncStorage.getItem('surname',(error,item) => console.log( ' post surname: ' + item));
+               const email = await AsyncStorage.getItem('email',(error,item) => console.log( ' post email: ' + item));
+
+               this.setState({id: id});
+               this.setState({token: token});
+               this.setState({name: name});
+               this.setState({surname: surname});
+               this.setState({email: email});
+
+           }catch(error){
+               console.log(error);
+           }
+       }
+
+       Chit =  () => {
         console.log(this.state.chit);
     
         return fetch("http://10.0.2.2:3333/api/v0.0.5/chits",
@@ -55,7 +80,7 @@ class PostScreen extends Component{
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-Authorization': global.token
+              'X-Authorization': this.state.token
             },
     
             body: JSON.stringify({
@@ -67,10 +92,10 @@ class PostScreen extends Component{
                  latitude: 0
              },
              user: {
-                "user_id": global.id,
-                "given_name": global.name,
-                "family_name": global.surname,
-                "email": global.email
+                "user_id": this.state.id,
+                "given_name": this.state.name,
+                "family_name": this.state.surname,
+                "email": this.state.email
             }
               
             })
@@ -86,13 +111,14 @@ class PostScreen extends Component{
             console.error(error);
           });
       }
+
       logout = () => {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/logout",
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-Authorization': global.token
+              'X-Authorization': this.state.token
             }
 
           })
@@ -109,12 +135,16 @@ class PostScreen extends Component{
           });
     }
     
+    componentDidMount () {
+        
+        this.retrieveUserInfo();
+    }
 
     render(){
     return(
     <View style={styles.view}>
         <View style={styles.tabInfo}>
-                    <Text>IMG {global.name}{' '}{global.surname}</Text>
+                    <Text>IMG {this.state.name}{' '}{this.state.surname}</Text>
                     <TouchableOpacity
                         style={styles.logoutBtn}
                         onPress={this.logout}

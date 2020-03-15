@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends Component {
 
@@ -7,7 +8,9 @@ class Login extends Component {
       super(props);
       this.state = {
         email: '',
-        password: ''
+        password: '',
+        token: '',
+        id: ''
       }
     
     }
@@ -37,24 +40,27 @@ class Login extends Component {
           return response.json();
         }
         ).then((responseJson) => {
-           global.token = responseJson.token;
-           global.id = responseJson.id;
-          console.log(global.id + '  '+ global.token);
+           //global.token = responseJson.token;
+           //global.id = responseJson.id;
+           this.setState({token: responseJson.token});
+           this.setState({id: responseJson.id});
+           this.storeData();
+          console.log(this.state.id + '  '+ this.state.token);
         }).catch((error) => {
           console.error(error);
         });
     }
-  /*
-    _storeData = async () => {
+  
+    storeData = async () => {
       try {
-        await AsyncStorage.setItem('token', authCode);
-        await AsyncStorage.setItem('id', id);
-      
+        await AsyncStorage.setItem('token', JSON.stringify(this.state.token));
+        await AsyncStorage.setItem('id', JSON.stringify(this.state.id));
+        console.log('ASync stora data login : => '+ this.state.id +'  '+ this.state.token)
       }catch(error){
         console.log(error);
       }
     }
-  */
+  
     render() {
       return (
         <View style={styles.container}>

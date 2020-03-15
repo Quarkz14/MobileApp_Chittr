@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet,Alert } from 'react-native';
-
+import AsyncStorage from '@react-native-community/async-storage';
+import { withNavigation } from 'react-navigation';
+import { cos } from 'react-native-reanimated';
 const styles = StyleSheet.create({
     container : {
        flex: 1,
@@ -56,8 +58,10 @@ class HomeScreen extends Component {
         this.state = {
             chitsListData: [],
             isLoading: true,
-            authCode: '',
-            id: ''
+            token: '',
+            id: '',
+            name: '',
+            surname: ''
         }
 
     }
@@ -65,22 +69,7 @@ class HomeScreen extends Component {
     static navigationOptions = {
         header: null
     }
-    /*
-    _retrieveData = async () => {
-        try{
-            const token = await AsyncStorage.getItem('token');
-            const id  = await AsyncStorage.getItem('id');
 
-            if(token !== null && id !== null) {
-                this.setState({authCode: token});
-                this.setState({id: id});
-                console.log(token + "  " + id);
-            }
-        }catch(error) {
-            console.log(error);
-        }
-    }
-*/
     getChits =   () => {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/chits')
             .then((response) => response.json())
@@ -89,29 +78,42 @@ class HomeScreen extends Component {
                     isLoading: false,
                     chitsListData: responseJson,
                 });
-                
+                this.retrieveData();
             }).catch((error) => {
                 console.log(error);
             });
     }
     componentDidMount() {
         this.getChits();
-        this.getUserInfo();
+        this.retrieveData();
+        this.retrieveProfileData();
     }
-    getUserInfo = () => {
-        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + global.id)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                
-                    global.name = responseJson.given_name;
-                    global.surname = responseJson.family_name;
-                    global.email = responseJson.email;
-                console.log(global.name);
-                console.log(global.surname);
-                
-            }).catch((error) => {
-                console.log(error);
-            });
+
+    retrieveData= async () => {
+        try{
+            const token = await  AsyncStorage.getItem('token',(error,item) => console.log( ' Homescreen token ' + item));
+            const id  =  await AsyncStorage.getItem('id', (error,item) => console.log('Homescreen id  ' + item));
+            
+            this.setState({token: token});
+            this.setState({id: id});
+            
+        }catch(error){
+            console.log(error);
+        }
+    }
+    //Get data form the profile 
+    retrieveProfileData = async() => {
+        try{
+            const name = await AsyncStorage.getItem('name',(error,item) => console.log( ' Profile name ' + item));
+            const surname = await AsyncStorage.getItem('surname',(error,item) => console.log( ' Profile surname ' + item))
+             
+            this.setState({name : name});
+            this.setState({surname : surname});
+
+
+        }catch(error){
+            console.log(error);
+        }
     }
     
     logout = () => {
@@ -126,6 +128,7 @@ class HomeScreen extends Component {
           })
           .then((response) =>{ 
             if(response.status === 200){
+                this.removeUserinfo();
                 this.props.navigation.navigate("LogIn")
                 Alert.alert("Acount logged out!")
             }else{
@@ -148,7 +151,7 @@ class HomeScreen extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.tabInfo}>
-                    <Text>IMG {global.name}{' '}{global.surname}</Text>
+                    <Text>IMG {this.state.name}{' '}{this.state.surname}</Text>
                     <TouchableOpacity
                         style={styles.logoutBtn}
                         onPress={this.logout}
