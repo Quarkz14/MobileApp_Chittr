@@ -28,7 +28,8 @@ class ProfileScreen extends Component{
             id: '',
             name: '',
             surname: '',
-            email:''
+            email:'',
+            userChits: []
         } 
     }
     static navigationOptions = {
@@ -56,13 +57,15 @@ class ProfileScreen extends Component{
                     this.setState({name: responseJson.given_name});
                     this.setState({surname: responseJson.family_name});
                     this.setState({email: responseJson.email});
+                    this.setState({userChits: responseJson.recent_chits});
+                    console.log('this is recent chits:  '+ responseJson.recent_chits);
+                    console.log('user info ' + this.state.name + '  ' + this.state.surname + ' ' + this.state.email);
                     this.storeUserData();
-                console.log('user info ' + this.state.name + '  ' + this.state.surname + ' ' + this.state.email);
             }).catch((error) => {
                 console.log(error);
             });
           }
-    
+    /*
           getUserChits = () => {
             return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id)
             .then((response) => response.json())
@@ -71,12 +74,15 @@ class ProfileScreen extends Component{
                     this.setState({name: responseJson.given_name});
                     this.setState({surname: responseJson.family_name});
                     this.setState({email: responseJson.email});
+                   
                     this.storeUserData();
                 console.log('user info ' + this.state.name + '  ' + this.state.surname + ' ' + this.state.email);
+                
             }).catch((error) => {
                 console.log(error);
             });
           }
+          */
     storeUserData = async () => {
       try{
 
@@ -133,11 +139,18 @@ class ProfileScreen extends Component{
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('UpdateInfo')}
         ><Text>Update Account</Text></TouchableOpacity>
-        <FlatList
-        
-        
-        
-        />
+
+       <FlatList
+                    data={this.state.userChits}
+                    renderItem={({ item }) => (
+                        <View style={styles.viewFlatList}>
+                            <Text style={styles.textName}>{this.state.name}: </Text>
+                            <Text style={styles.textChit}>{item.chit_content}</Text>
+                        </View>
+                    )}
+                    keyExtractor={item => item.chit_id.toString()}
+
+                />
     </View>
     );
     }

@@ -47,7 +47,7 @@ class Login extends Component {
            this.storeData();
           console.log(this.state.id + '  '+ this.state.token);
         }).catch((error) => {
-          console.error(error);
+          console.error(error);cmd
         });
     }
   

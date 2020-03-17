@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet,Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { withNavigation } from 'react-navigation';
-import { cos } from 'react-native-reanimated';
 const styles = StyleSheet.create({
     container : {
        flex: 1,
@@ -169,7 +167,7 @@ class HomeScreen extends Component {
                             <Text style={styles.textChit}>{item.chit_content}</Text>
                         </View>
                     )}
-                    keyExtractor={item => item.chit_id}
+                    keyExtractor={item => item.chit_id.toString()}
 
                 />
                 </View>
