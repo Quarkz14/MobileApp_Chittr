@@ -5,6 +5,7 @@ import { createAppContainer } from 'react-navigation';
 import UpdateScreen from './UpdateScreen'
 import AsyncStorage from '@react-native-community/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
+
 const styles = StyleSheet.create({
     
     tabInfo: {
@@ -101,7 +102,7 @@ class ProfileScreen extends Component{
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-Authorization': global.token
+              'X-Authorization': this.state.token
             }
 
           })
@@ -120,7 +121,6 @@ class ProfileScreen extends Component{
     
     componentDidMount() {
       this.retrieveLoginData();
-      this.getUserInfo();
       this.storeUserData();
     }
   

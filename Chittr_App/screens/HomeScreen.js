@@ -120,7 +120,7 @@ class HomeScreen extends Component {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-Authorization': global.token
+              'X-Authorization': this.state.token
             }
 
           })
