@@ -10,12 +10,41 @@ const styles = StyleSheet.create({
     
     tabInfo: {
         justifyContent: "space-around",
-        flexDirection: "row"
-        
-
+        flexDirection: "row",
+        borderWidth: 2,
+        borderColor: '#fff'
     },
     logoutBtn: {
-        backgroundColor: '#3AA18D'
+        backgroundColor: '#3AA18D',
+        borderRadius:7
+    },
+    container: {
+      flex: 1,
+      backgroundColor:'#8BD5C7'
+    },
+    chit: {
+      fontSize:16,
+      paddingBottom: 10,
+      paddingLeft:10,
+      backgroundColor: "#EDF8F6",
+      borderStyle: "solid",
+        borderColor: "#000000"
+    },
+    textName : {
+      fontSize: 18,
+      padding: 20,
+      paddingLeft: 0,
+      fontWeight: "bold"
+    },
+    updateBtnContainer : {
+      alignSelf: "flex-end",
+      padding: 10
+      
+    },
+    updateBtnText : {
+      backgroundColor:'#3AA18D',
+      fontSize: 20,
+      borderRadius: 5
     }
    
   });
@@ -126,7 +155,7 @@ class ProfileScreen extends Component{
   
     render(){
     return(
-      <View>
+      <View style={styles.container}>
         <View style={styles.tabInfo}>
         <Text>IMG {this.state.name}{' '}{this.state.surname}</Text>
         <TouchableOpacity
@@ -136,21 +165,24 @@ class ProfileScreen extends Component{
             <Text>Log out</Text>
         </TouchableOpacity>
         </View>
+        <View style={styles.updateBtnContainer}>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('UpdateInfo')}
-        ><Text>Update Account</Text></TouchableOpacity>
-
+        ><Text style={styles.updateBtnText}>Update Account</Text></TouchableOpacity>
+        </View>
+        <View>
        <FlatList
                     data={this.state.userChits}
                     renderItem={({ item }) => (
                         <View style={styles.viewFlatList}>
                             <Text style={styles.textName}>{this.state.name}: </Text>
-                            <Text style={styles.textChit}>{item.chit_content}</Text>
+                            <Text style={styles.chit}>{item.chit_content}</Text>
                         </View>
                     )}
                     keyExtractor={item => item.chit_id.toString()}
 
                 />
+      </View>
     </View>
     );
     }

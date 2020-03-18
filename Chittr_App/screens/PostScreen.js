@@ -13,25 +13,49 @@ const styles = StyleSheet.create({
     },
     btnText: {
         backgroundColor: '#3AA18D',
-        width: "15%"
+        width: "17%",
+        borderRadius: 8,
+        
     },
     view : {
         backgroundColor: '#8BD5C7',
         flex: 1
     },
+    textInputContainer: {
+        alignItems: "center"
+    },
     textInput: {
         backgroundColor: '#fff',
-        width: '60%'
+        width: '80%',
+        height: "30%",
+        marginTop: 200,
+        alignSelf:"center"
     },
     tabInfo: {
         justifyContent: "space-around",
-        flexDirection: "row"
+        flexDirection: "row",
+        borderWidth: 2,
+        borderColor: '#fff'
         
 
     },
     logoutBtn: {
-        backgroundColor: '#3AA18D'
-    }
+        backgroundColor: '#3AA18D',
+        borderRadius:7
+    },
+    postContainer:{
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    textLimit: {
+            alignSelf:"flex-end",
+            paddingRight: 40
+    },
+    postBtn : {
+        alignSelf: "flex-end",
+        paddingRight: 45
+    },
+
    
    
   });
@@ -152,7 +176,7 @@ class PostScreen extends Component{
                         <Text>Log out</Text>
                     </TouchableOpacity>
                 </View>
-    
+    <View atyle={styles.textInputContainer}>
     <TextInput 
         style={styles.textInput}
         placeholder="Post a chitt...."
@@ -162,14 +186,18 @@ class PostScreen extends Component{
         onChangeText = {(text) => this.setState({chit_content:text})}
         value = {this.state.chit_content}
     />
-    <Text>Characters Left: {this.state.chit_content.length}/141</Text>
-    
-    <TouchableOpacity
-        onPress={this.Chit}
-    >
-        <Text style={styles.btnText}>Post Chit</Text>
-    </TouchableOpacity>
+    <Text style={styles.textLimit}>Characters Left: {this.state.chit_content.length}/141</Text>
+        
+        <TouchableOpacity
+            style={styles.postBtn}
+            onPress={this.Chit}
+        >
+            <Text style={styles.btnText}>Post Chit</Text>
+        </TouchableOpacity>
     </View>
+
+    </View>
+    
     );
     }
    }

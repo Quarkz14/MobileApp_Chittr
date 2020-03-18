@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 const styles = StyleSheet.create({
     container : {
        flex: 1,
-       alignItems: "center",
        backgroundColor: '#8BD5C7'
     },
    title : { 
@@ -21,7 +20,8 @@ const styles = StyleSheet.create({
     ScrollViewContainer : {
        width: "95%",
        height: "95%",
-       padding: 20
+       padding: 20,
+       alignItems: "center"
        
     },
     viewFlatList : {
@@ -39,13 +39,14 @@ const styles = StyleSheet.create({
         borderColor: "#000000"
     },
     tabInfo: {
-        justifyContent: "space-around",
-        flexDirection: "row"
-        
-
+        justifyContent: "space-evenly",
+        flexDirection: "row",
+        borderWidth: 2,
+        borderColor: '#fff'
     },
     logoutBtn: {
-        backgroundColor: '#3AA18D'
+        backgroundColor: '#3AA18D',
+        borderRadius:7
     }
    
   });

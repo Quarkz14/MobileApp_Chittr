@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View,TouchableOpacity,StyleSheet,TextInput, FlatList } from 'react-native';
+import { Text, View,TouchableOpacity,StyleSheet,TextInput, FlatList,Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator} from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
@@ -13,14 +13,20 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     logoutBtn: {
-        backgroundColor: '#3AA18D'
+        backgroundColor: '#3AA18D',
+        borderRadius:7
     },
     textInput : {
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        width: "80%",
+        margin:20,
+        
     },
     searchBtn : {
     backgroundColor: '#3AA18D',
-    margin:15
+    margin:30,
+    borderRadius: 5,
+    height: "25%"
     },
     container: {
         flex:1,
@@ -30,7 +36,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         width: "80%",
-        
+        margin: 10
       },
       followContainer : {
         flexDirection: "row",
@@ -47,7 +53,29 @@ const styles = StyleSheet.create({
       followText: {
         fontSize: 18,
         textAlign: "center",
-      }
+      },
+      ScrollViewContainer : {
+        width: "95%",
+        height: "73%",
+        padding: 20
+        
+     },
+     listContainer: {
+      justifyContent: "space-around",
+      flexDirection: "row"
+     },
+     listText: {
+       fontSize: 20
+     },
+     btnText : {
+       fontSize: 20,
+       padding: 5,
+       backgroundColor:'#3AA18D'
+     },
+     searchText: {
+          fontSize: 20,
+          alignSelf: "center"
+     }
    
   });
 
@@ -125,11 +153,37 @@ class FPanelScreen extends Component{
           });
     }
 
+    followUser = (follower_id) => {
+      console.log("This user id:" + follower_id + 'is being followed by' +this.state.id);
+
+      return fetch("http://10.0.2.2:3333/api/v0.0.5/user/" + follower_id + '/follow',
+      {
+        method: 'POST',
+        headers: {
+          'X-Authorization': this.state.token
+        }
+      })
+      .then((response) =>{ 
+        if(response.status === 200){
+            Alert.alert("Followed!")
+        }else{
+            Alert.alert("You already follow them!")
+        }
+      }
+      ).catch((error) => {
+        console.error(error);
+      });
+    }
     componentDidMount() {
         this.retrieveLoginData();
         
       }
-
+      emptyComponent= () => {
+        return(
+        <View>
+          <Text style={styles.searchText}>Search a user</Text>
+        </View>);
+      }
 
     render(){
     return(
@@ -145,6 +199,7 @@ class FPanelScreen extends Component{
             </View>
             <View style={styles.searchContainer}>
                 <TextInput
+                style={styles.textInput}
                 placeholder="Search"
                 onChangeText={(text) => this.setState({ searchInput: text })}
                 value={this.state.searchInput}
@@ -156,6 +211,22 @@ class FPanelScreen extends Component{
                     <Text>Search</Text>
                 </TouchableOpacity>
             </View>
+            <View style={styles.ScrollViewContainer}>
+                <FlatList
+                    data={this.state.arrayUsers}
+                    renderItem={({ item }) => (
+                        <View style={styles.listContainer}>
+                            <Text style={styles.listText}>{item.given_name}{' '}{item.family_name} </Text>
+                            <TouchableOpacity
+                            style={styles.btnText}
+                            onPress={()=>this.followUser(item.user_id)}
+                            ><Text>Follow</Text></TouchableOpacity>
+                        </View>
+                    )}
+                    keyExtractor={item => item.user_id.toString()}
+                    ListEmptyComponent={this.emptyComponent}
+                />
+            </View>
             <View style={styles.followContainer}>
                 <TouchableOpacity
                 style={styles.followBtn}
@@ -166,7 +237,7 @@ class FPanelScreen extends Component{
                 onPress={()=> this.props.navigation.navigate('Following')}
                 ><Text style={styles.followText}>Following</Text></TouchableOpacity>
             </View>
-
+            
         </View>
     );
     }
