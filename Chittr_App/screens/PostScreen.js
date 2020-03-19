@@ -79,8 +79,10 @@ class PostScreen extends Component{
 
        retrieveUserInfo = async() => {
            try{
-               const id = await AsyncStorage.getItem('id',(error,item) => console.log( ' post id: ' + item));
-               const token = await AsyncStorage.getItem('token',(error,item) => console.log( ' post token: ' + item));
+                const  idIncoming = await AsyncStorage.getItem('id',(error,item) => console.log( ' post id: ' + item));
+                const  token = await AsyncStorage.getItem('token',(error,item) => console.log( ' post token: ' + item));
+                const id = JSON.parse(idIncoming);
+
                const name = await AsyncStorage.getItem('name',(error,item) => console.log( ' post name: ' + item));
                const surname = await AsyncStorage.getItem('surname',(error,item) => console.log( ' post surname: ' + item));
                const email = await AsyncStorage.getItem('email',(error,item) => console.log( ' post email: ' + item));
@@ -97,7 +99,7 @@ class PostScreen extends Component{
        }
 
        Chit =  () => {
-        console.log(this.state.chit);
+        console.log(this.state.chit_content);
     
         return fetch("http://10.0.2.2:3333/api/v0.0.5/chits",
           {

@@ -90,8 +90,11 @@ class HomeScreen extends Component {
 
     retrieveData= async () => {
         try{
-            const token = await  AsyncStorage.getItem('token',(error,item) => console.log( ' Homescreen token ' + item));
-            const id  =  await AsyncStorage.getItem('id', (error,item) => console.log('Homescreen id  ' + item));
+            const  idIncoming = await AsyncStorage.getItem('id',(error,item) => console.log( ' home id: ' + item));
+            const  token = await AsyncStorage.getItem('token',(error,item) => console.log( ' home token: ' + item));
+           
+            const id = JSON.parse(idIncoming);
+           
             
             this.setState({token: token});
             this.setState({id: id});
@@ -127,7 +130,7 @@ class HomeScreen extends Component {
           })
           .then((response) =>{ 
             if(response.status === 200){
-                this.removeUserinfo();
+                
                 this.props.navigation.navigate("LogIn")
                 Alert.alert("Acount logged out!")
             }else{

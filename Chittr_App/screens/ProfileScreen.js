@@ -45,6 +45,12 @@ const styles = StyleSheet.create({
       backgroundColor:'#3AA18D',
       fontSize: 20,
       borderRadius: 5
+    },
+    flatlistContainer : {
+      width: "95%",
+      height: "80%",
+      padding: 20,
+      alignItems: "center"
     }
    
   });
@@ -69,9 +75,13 @@ class ProfileScreen extends Component{
        retrieveLoginData = async () => {
         try {
   
-          const  idIncoming = await AsyncStorage.getItem('id',(error,item) => console.log( ' Profile id: ' + item));
+          const  idIncoming = await AsyncStorage.getItem('id',(error,item) => console.log( ' F-panel id: ' + item));
+          const  token = await AsyncStorage.getItem('token',(error,item) => console.log( 'profile token : ' + item));
+         
           const id = JSON.parse(idIncoming);
+          
           this.setState({id:id});
+          this.setState({token:token});
           console.log("Async profile retrieve :  " + this.state.id)
           this.getUserInfo();
         }catch(error){
@@ -170,7 +180,7 @@ class ProfileScreen extends Component{
           onPress={() => this.props.navigation.navigate('UpdateInfo')}
         ><Text style={styles.updateBtnText}>Update Account</Text></TouchableOpacity>
         </View>
-        <View>
+        <View style={styles.flatlistContainer}>
        <FlatList
                     data={this.state.userChits}
                     renderItem={({ item }) => (

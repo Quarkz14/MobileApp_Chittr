@@ -51,9 +51,9 @@ class FollowerScreen extends Component{
         try {
   
           const  idIncoming = await AsyncStorage.getItem('id',(item) => console.log( ' update id: ' + item));
-          const tokenIncoming = await AsyncStorage.getItem('token',(item) => console.log( ' update token: ' + item));
+          const token = await AsyncStorage.getItem('token',(item) => console.log( ' update token: ' + item));
           const id = JSON.parse(idIncoming);
-          const token = JSON.parse(tokenIncoming);
+         
           this.setState({id:id});
           this.setState({token: token});
           console.log("Async followers retrieve :  " + this.state.id + '  ' + this.state.token);

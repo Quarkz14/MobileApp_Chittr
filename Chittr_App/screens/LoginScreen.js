@@ -53,7 +53,7 @@ class Login extends Component {
   
     storeData = async () => {
       try {
-        await AsyncStorage.setItem('token', JSON.stringify(this.state.token));
+        await AsyncStorage.setItem('token', this.state.token);
         await AsyncStorage.setItem('id', JSON.stringify(this.state.id));
         console.log('ASync stora data login : => '+ this.state.id +'  '+ this.state.token)
       }catch(error){
