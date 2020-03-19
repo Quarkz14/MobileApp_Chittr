@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View,TouchableOpacity,StyleSheet,TextInput, FlatList,Alert } from 'react-native';
+import { Text, View,TouchableOpacity,StyleSheet,TextInput, FlatList,Alert ,Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator} from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
       },
       ScrollViewContainer : {
         width: "95%",
-        height: "73%",
+        height: "70%",
         padding: 20
         
      },
@@ -90,6 +90,7 @@ class FPanelScreen extends Component{
             searchInput: '',
             arrayUsers: [],
             searchedUserID:'',
+            photo: null,
         }
     }
     static navigationOptions = {
@@ -100,16 +101,16 @@ class FPanelScreen extends Component{
         try {
   
           const  idIncoming = await AsyncStorage.getItem('id',(error,item) => console.log( ' F-panel id: ' + item));
-          const  tokenIncoming = await AsyncStorage.getItem('token',(error,item) => console.log( ' F-panel token: ' + item));
+          const  token = await AsyncStorage.getItem('token',(error,item) => console.log( ' F-panel token: ' + item));
           const name = await AsyncStorage.getItem('name',(error,item) => console.log( ' F-panel name: ' + item));
           const surname = await AsyncStorage.getItem('surname',(error,item) => console.log( ' F-panel surname: ' + item));
           const id = JSON.parse(idIncoming);
-          const token = JSON.parse(tokenIncoming);
+          
           this.setState({id:id});
           this.setState({token:token});
           this.setState({name:name});
           this.setState({surname: surname});
-
+          this.getUserPhoto();
           console.log("Async f-panel retrieve :  " + this.state.id + '  token:' + this.state.token + ' name:' + this.state.name + ' surname: ' + this.state.surname);
             
         }catch(error){
@@ -185,11 +186,28 @@ class FPanelScreen extends Component{
         </View>);
       }
 
+      getUserPhoto = () => {
+        console.log("ID of getPhot" + this.state.id)
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo')
+            .then((response) =>{
+                this.setState({photo:response})
+                console.log(response);
+              })
+              .catch((error) => {
+                  console.log(error);
+              });
+      }
     render(){
+      const {photo} =this.state
     return(
         <View style={styles.container}>
             <View style={styles.tabInfo}>
-            <Text>IMG {this.state.name}{' '}{this.state.surname}</Text>
+            <Text>{ photo && (
+                            <Image
+                                source={{uri:photo.url}}
+                                style={{width:30, height: 30}}
+                            /> )}
+                            {this.state.name}{' '}{this.state.surname}</Text>
             <TouchableOpacity
                 style={styles.logoutBtn}
                 onPress={this.logout}

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View,TouchableOpacity, StyleSheet,Alert  } from 'react-native';
+import { Text, View,TouchableOpacity, StyleSheet,Alert,Image  } from 'react-native';
 import { createStackNavigator} from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
 import UpdateScreen from './UpdateScreen'
+import PostPictureScreen from './PostPictureScreen'
 import AsyncStorage from '@react-native-community/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 
@@ -46,6 +47,15 @@ const styles = StyleSheet.create({
       fontSize: 20,
       borderRadius: 5
     },
+    pictureBtn:{
+      backgroundColor:'#3AA18D',
+      fontSize: 20,
+      borderRadius: 5
+    },
+    pictureBtnContainer:{
+      alignSelf: "flex-end",
+      padding: 10
+    },
     flatlistContainer : {
       width: "95%",
       height: "80%",
@@ -65,7 +75,8 @@ class ProfileScreen extends Component{
             name: '',
             surname: '',
             email:'',
-            userChits: []
+            userChits: [],
+            photo: null,
         } 
     }
     static navigationOptions = {
@@ -84,6 +95,7 @@ class ProfileScreen extends Component{
           this.setState({token:token});
           console.log("Async profile retrieve :  " + this.state.id)
           this.getUserInfo();
+          this.getUserPhoto();
         }catch(error){
           console.log(error);
         }
@@ -105,24 +117,7 @@ class ProfileScreen extends Component{
                 console.log(error);
             });
           }
-    /*
-          getUserChits = () => {
-            return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                
-                    this.setState({name: responseJson.given_name});
-                    this.setState({surname: responseJson.family_name});
-                    this.setState({email: responseJson.email});
-                   
-                    this.storeUserData();
-                console.log('user info ' + this.state.name + '  ' + this.state.surname + ' ' + this.state.email);
-                
-            }).catch((error) => {
-                console.log(error);
-            });
-          }
-          */
+   
     storeUserData = async () => {
       try{
 
@@ -157,6 +152,18 @@ class ProfileScreen extends Component{
             console.error(error);
           });
     }
+
+    getUserPhoto = () => {
+      console.log("ID of getPhot" + this.state.id)
+      return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo')
+          .then((response) =>{
+              this.setState({photo:response})
+              console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
     
     componentDidMount() {
       this.retrieveLoginData();
@@ -164,10 +171,16 @@ class ProfileScreen extends Component{
     }
   
     render(){
+      const {photo} = this.state
     return(
       <View style={styles.container}>
         <View style={styles.tabInfo}>
-        <Text>IMG {this.state.name}{' '}{this.state.surname}</Text>
+        <Text>{ photo && (
+          <Image
+              source={{uri:photo.url}}
+              style={{width:30, height: 30}}
+        /> )}
+        {this.state.name}{' '}{this.state.surname}</Text>
         <TouchableOpacity
             style={styles.logoutBtn}
             onPress={this.logout}
@@ -179,6 +192,12 @@ class ProfileScreen extends Component{
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('UpdateInfo')}
         ><Text style={styles.updateBtnText}>Update Account</Text></TouchableOpacity>
+        </View>
+        <View style = {styles.pictureBtnContainer}>
+          <TouchableOpacity
+          style={styles.pictureBtn}
+          onPress={() => this.props.navigation.navigate('PictureScreen')}
+          ><Text>Add picture</Text></TouchableOpacity>
         </View>
         <View style={styles.flatlistContainer}>
        <FlatList
@@ -205,6 +224,9 @@ const ProfileActions = createStackNavigator ({
   },
   ProfileScreen : {
     screen: ProfileScreen
+  },
+  PictureScreen : {
+    screen: PostPictureScreen
   }
 },
   {

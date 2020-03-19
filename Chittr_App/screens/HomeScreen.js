@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet,Alert } from 'react-native';
+import { Text, View, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet,Alert,Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const styles = StyleSheet.create({
     container : {
@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
     },
     logoutBtn: {
         backgroundColor: '#3AA18D',
-        borderRadius:7
+        borderRadius:7,
+        
     }
    
   });
@@ -60,7 +61,9 @@ class HomeScreen extends Component {
             token: '',
             id: '',
             name: '',
-            surname: ''
+            surname: '',
+            photo: null,
+            refreshing: false,
         }
 
     }
@@ -70,7 +73,7 @@ class HomeScreen extends Component {
     }
 
     getChits =   () => {
-        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits')
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=50')
             .then((response) => response.json())
             .then((responseJson) => {
                 this.setState({
@@ -78,6 +81,9 @@ class HomeScreen extends Component {
                     chitsListData: responseJson,
                 });
                 this.retrieveData();
+                this.setState({
+                    refreshing: false
+                })
             }).catch((error) => {
                 console.log(error);
             });
@@ -98,7 +104,7 @@ class HomeScreen extends Component {
             
             this.setState({token: token});
             this.setState({id: id});
-            
+            this.getUserPhoto();
         }catch(error){
             console.log(error);
         }
@@ -141,8 +147,28 @@ class HomeScreen extends Component {
             console.error(error);
           });
     }
+    getUserPhoto = () => {
+        console.log("ID of getPhot" + this.state.id)
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo')
+            .then((response) =>{
+                this.setState({photo:response})
+                console.log(response);
+              })
+              .catch((error) => {
+                  console.log(error);
+              });
+      }
+      handleRefresh = () => {
+          
+          this.setState({
+              refreshing: true,
+          })
+          this.getChits();
+          
+      }
     
     render() {
+        const {photo} = this.state
         if (this.state.isLoading) {
             return (
                 <View>
@@ -153,7 +179,12 @@ class HomeScreen extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.tabInfo}>
-                    <Text>IMG {this.state.name}{' '}{this.state.surname}</Text>
+                <Text>{ photo && (
+                            <Image
+                                source={{uri:photo.url}}
+                                style={{width:30, height: 30}}
+                            /> )}
+                            {this.state.name}{' '}{this.state.surname}</Text>
                     <TouchableOpacity
                         style={styles.logoutBtn}
                         onPress={this.logout}
@@ -172,7 +203,9 @@ class HomeScreen extends Component {
                         </View>
                     )}
                     keyExtractor={item => item.chit_id.toString()}
-
+                    refreshing = {this.state.refreshing}
+                    onRefresh={this.handleRefresh}
+                    
                 />
                 </View>
             
