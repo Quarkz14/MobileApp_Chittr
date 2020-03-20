@@ -1,6 +1,43 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
+//styling the screen
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: '#8BD5C7'
+  },
+  title: {
+    fontSize: 50,
+    marginBottom: 150,
+    marginTop: 100
+  },
+  textInput: {
+    width: "90%",
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    padding: 15
+  },
+  btnContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "90%"
+  },
+  btn: {
+    backgroundColor: "#3AA18D",
+    padding: 15,
+    width: "45%"
+  },
+  btnText: {
+    fontSize: 18,
+    textAlign: "center",
+  }
+
+
+});
+
+
   class Register extends Component {
 
     constructor(props) {
@@ -14,7 +51,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'reac
       }
     }
   
-    
+    //the method gets the populated states that have been populated by textInput
     Register = () => {
       console.log(this.state.email + "  " + this.state.password + " " + this.state.name + " " + this.state.surname);
 
@@ -90,39 +127,6 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'reac
     }
   }
   
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: "center",
-      backgroundColor: '#8BD5C7'
-    },
-    title: {
-      fontSize: 50,
-      marginBottom: 150,
-      marginTop: 100
-    },
-    textInput: {
-      width: "90%",
-      marginBottom: 10,
-      backgroundColor: "#fff",
-      padding: 15
-    },
-    btnContainer: {
-      flexDirection: "row",
-      justifyContent: "center",
-      width: "90%"
-    },
-    btn: {
-      backgroundColor: "#3AA18D",
-      padding: 15,
-      width: "45%"
-    },
-    btnText: {
-      fontSize: 18,
-      textAlign: "center",
-    }
   
-  
-  });
   
   export default Register;

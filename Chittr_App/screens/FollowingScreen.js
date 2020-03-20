@@ -46,7 +46,7 @@ class FollowerScreen extends Component{
     static navigationOptions = {
         header: null
        }
-
+        //gets the data form the async storage
        retrieveLoginData = async () => {
         try {
   
@@ -62,7 +62,7 @@ class FollowerScreen extends Component{
           console.log(error);
         }
       }
-
+      //gets the followers by sending the logged in user's user id and then display in the flatlist
       getFollowers = () => {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' +this.state.id + "/following")
             .then((response) => response.json())
@@ -74,7 +74,7 @@ class FollowerScreen extends Component{
                 console.log(error);
             });
       }
-
+      //gets the following user_id from the flatlist and unfollows that user
       unFollowUser = (following_id) => {
         console.log("This user id: " + following_id + 'is being unfollowed by: ' +this.state.id);
 
@@ -96,6 +96,7 @@ class FollowerScreen extends Component{
           console.error(error);
         });
       }
+
        componentDidMount(){
            this.retrieveLoginData();
        }

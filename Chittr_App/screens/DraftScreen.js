@@ -21,16 +21,28 @@ class DraftScreen extends Component{
        }
 
        retrieveDraft = async() => {
-            try{
-                const chit= await AsyncStorage.getItem('chitDraft');
-                draftList.push(chit);
-            }catch(error){
-                console.log(error);
-            }
+           try{
+               const chit = await AsyncStorage.getItem('chitDraft');
+               this.state.draftList = await AsyncStorage.getItem('draftList');
+               const chitSon = JSON.parse(chit); 
+               this.state.draftList.push(chitSon);
+               console.log(this.state.draftList);
+               await AsyncStorage.setItem('draftList',JSON.stringify(this.state.draftList));
+           }catch(error){
+               console.log(error);
+           }
        }
-      discardDraft = (chit_content) => {
-            const index = draftList.indexOf("'" + chit_content + "'");
-            draftList.filter(draftList !== index)
+
+      discardDraft = (i) => {
+        this.setState(
+            prevState => {
+              let draftList = prevState.draftList.slice();
+      
+              draftList.splice(i, 1);
+      
+              return { draftList };
+            }
+          );
       }
        emptyDrafts = () => {
            return(
@@ -39,20 +51,24 @@ class DraftScreen extends Component{
                </View>
            )
        }
+       componentDidMount(){
+           this.retrieveDraft();
+       }
     render(){
     return(
        
         <View>
           <FlatList
                     data={this.state.draftList}
-                    renderItem={({ item }) => (
+                    renderItem={({ item, index }) => (
                         <View>
                             <Text>{item.chit_content}: </Text>
-                            <TouchableOpacity><Text>Discard</Text></TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={this.discardDraft(index)}
+                            ><Text>Discard</Text></TouchableOpacity>
                             <TouchableOpacity><Text>Edit</Text></TouchableOpacity>
                         </View>
                     )}
-                    keyExtractor={({item}) => item.chit_content}
                     ListEmptyComponent = {this.emptyDrafts()}
                     
                 />

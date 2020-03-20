@@ -2,6 +2,41 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: '#8BD5C7'
+  },
+  title: {
+    fontSize: 50,
+    marginBottom: 150,
+    marginTop: 100
+  },
+  textInput: {
+    width: "90%",
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    padding: 15
+  },
+  btnContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%"
+  },
+  btn: {
+    backgroundColor: "#3AA18D",
+    padding: 15,
+    width: "45%"
+  },
+  btnText: {
+    fontSize: 18,
+    textAlign: "center",
+  }
+
+
+});
+
 class Login extends Component {
 
     constructor(props) {
@@ -14,7 +49,12 @@ class Login extends Component {
       }
     
     }
-  
+    
+    /**
+     * The login function gets the textinput value of the email and password sends it to the server
+     * In return the function retrieves the id and token of the user after the server has sent a repsonse and it stored in the state
+     * hence the storeData() function is invoked after the set states
+     */
     Login =  async () => {
       console.log(this.state.email + "  " + this.state.password);
   
@@ -32,7 +72,7 @@ class Login extends Component {
         })
         .then((response) =>{ 
           if(response.status === 200){
-            this.props.navigation.navigate('Home')
+            console.log("Logged in");
           }
           else{
             Alert.alert("Email or Password is invalid")
@@ -40,17 +80,17 @@ class Login extends Component {
           return response.json();
         }
         ).then((responseJson) => {
-           //global.token = responseJson.token;
-           //global.id = responseJson.id;
            this.setState({token: responseJson.token});
            this.setState({id: responseJson.id});
            this.storeData();
+           this.props.navigation.navigate('Home')
           console.log(this.state.id + '  '+ this.state.token);
         }).catch((error) => {
           console.error(error);
         });
     }
-  
+    
+    //this is where the async stores the login details
     storeData = async () => {
       try {
         await AsyncStorage.setItem('token', this.state.token);
@@ -98,39 +138,6 @@ class Login extends Component {
     }
   }
   
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: "center",
-      backgroundColor: '#8BD5C7'
-    },
-    title: {
-      fontSize: 50,
-      marginBottom: 150,
-      marginTop: 100
-    },
-    textInput: {
-      width: "90%",
-      marginBottom: 10,
-      backgroundColor: "#fff",
-      padding: 15
-    },
-    btnContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: "90%"
-    },
-    btn: {
-      backgroundColor: "#3AA18D",
-      padding: 15,
-      width: "45%"
-    },
-    btnText: {
-      fontSize: 18,
-      textAlign: "center",
-    }
-  
-  
-  });
+ 
   
   export default Login;

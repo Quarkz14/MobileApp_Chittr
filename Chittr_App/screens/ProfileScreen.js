@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     },
     logoutBtn: {
         backgroundColor: '#3AA18D',
-        borderRadius:7
+        borderRadius:7,
+        margin:10
     },
     container: {
       flex: 1,
@@ -82,7 +83,7 @@ class ProfileScreen extends Component{
     static navigationOptions = {
         header: null
        }
-
+       //gets id and token from the async storage(local storage) parse the id because async storage accepts string only
        retrieveLoginData = async () => {
         try {
   
@@ -100,7 +101,7 @@ class ProfileScreen extends Component{
           console.log(error);
         }
       }
-
+        //with the id of the user the server returns the user account info
        getUserInfo =  () => {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id)
             .then((response) => response.json())
@@ -117,7 +118,8 @@ class ProfileScreen extends Component{
                 console.log(error);
             });
           }
-   
+
+    //so it can be used in post and update
     storeUserData = async () => {
       try{
 
@@ -129,7 +131,7 @@ class ProfileScreen extends Component{
         console.log(error);
       }
     }
-    
+  
        logout = () => {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/logout",
           {
@@ -153,6 +155,12 @@ class ProfileScreen extends Component{
           });
     }
 
+    /**
+     * Gets the user photo
+     * When the user registers and sets a photo then it can get the photo the user has set 
+     * However when the user is given the default image which is a white image and then the user posts an image 
+     * then the user won't have the image he/she has posted but instead have the default.jpeg image
+     */
     getUserPhoto = () => {
       console.log("ID of getPhot" + this.state.id)
       return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo')
@@ -218,6 +226,7 @@ class ProfileScreen extends Component{
     
 }
 
+//Another stack navigator to set a picture and update account info
 const ProfileActions = createStackNavigator ({
   UpdateInfo : {
       screen: UpdateScreen

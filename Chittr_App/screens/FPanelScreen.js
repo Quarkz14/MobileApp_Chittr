@@ -6,15 +6,19 @@ import { createAppContainer } from 'react-navigation';
 import FollowerScreen from './FollowerScreen';
 import FollowingScreen from './FollowingScreen';
 
+//styling of the page
 const styles = StyleSheet.create({
     
     tabInfo: {
         justifyContent: "space-around",
-        flexDirection: "row"
+        flexDirection: "row",
+        borderWidth: 2,
+        borderColor: '#fff'
     },
     logoutBtn: {
         backgroundColor: '#3AA18D',
-        borderRadius:7
+        borderRadius:7,
+        margin:10
     },
     textInput : {
         backgroundColor: '#fff',
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
       },
       ScrollViewContainer : {
         width: "95%",
-        height: "70%",
+        height: "68%",
         padding: 20
         
      },
@@ -93,10 +97,12 @@ class FPanelScreen extends Component{
             photo: null,
         }
     }
+
+    //sets the header to null
     static navigationOptions = {
         header: null
        }
-
+       // gets the login data id adn token that have been saved locally
        retrieveLoginData = async () => {
         try {
   
@@ -117,7 +123,7 @@ class FPanelScreen extends Component{
           console.log(error);
         }
       }
-
+      // requires a string(this.state.searchInput, which is the value of the textInput) to search the database for any matching strings
       searchUser = () => {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/search_user?q='+ this.state.searchInput)
             .then((response) => response.json())
@@ -130,7 +136,7 @@ class FPanelScreen extends Component{
                 console.log(error);
             });
       }
-
+      //logs out the user by taking there token
       logout = () => {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/logout",
           {
@@ -153,7 +159,7 @@ class FPanelScreen extends Component{
             console.error(error);
           });
     }
-
+    // a user is followed when the user id of the user we want to follow and the id of the user account are known
     followUser = (follower_id) => {
       console.log("This user id:" + follower_id + 'is being followed by' +this.state.id);
 
@@ -175,17 +181,20 @@ class FPanelScreen extends Component{
         console.error(error);
       });
     }
+
     componentDidMount() {
         this.retrieveLoginData();
         
       }
+
+      //informs the user to search a user for the list to display it
       emptyComponent= () => {
         return(
         <View>
           <Text style={styles.searchText}>Search a user</Text>
         </View>);
       }
-
+      // gets the user photo by inserting the logged in user id
       getUserPhoto = () => {
         console.log("ID of getPhot" + this.state.id)
         return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo')
@@ -197,6 +206,7 @@ class FPanelScreen extends Component{
                   console.log(error);
               });
       }
+
     render(){
       const {photo} =this.state
     return(
@@ -260,6 +270,8 @@ class FPanelScreen extends Component{
     );
     }
 }
+
+    //created a stack navigator to display followers and following screens
     const FPanel = createStackNavigator ({
         Followers : {
             screen: FollowerScreen

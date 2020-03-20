@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View,TouchableOpacity,StyleSheet,TextInput,Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-
+//styling
 const styles = StyleSheet.create({
     
     tabInfo: {
@@ -61,22 +61,33 @@ class UpdateScreen extends Component{
     static navigationOptions = {
         header: null
        }
+       
 
+       //get token and id form local storage
        retrieveLoginData = async () => {
         try {
   
           const  idIncoming = await AsyncStorage.getItem('id',(item) => console.log( ' update id: ' + item));
           const token = await AsyncStorage.getItem('token',(item) => console.log( ' update token: ' + item));
+          const name = await AsyncStorage.getItem('name',(error,item) => console.log( ' post name: ' + item));
+          const surname = await AsyncStorage.getItem('surname',(error,item) => console.log( ' post surname: ' + item));
+          const email = await AsyncStorage.getItem('email',(error,item) => console.log( ' post email: ' + item));
           const id = JSON.parse(idIncoming);
           
           this.setState({id:id});
           this.setState({token: token});
+          this.setState({name:name});
+          this.setState({surname:surname});
+          this.setState({email:email});
+
           console.log("Async update retrieve :  " + this.state.id + '  ' + this.state.token);
         }catch(error){
           console.log(error);
         }
       }
 
+
+      // patch method with json object with the value of the user textinput
        updateUser = ()=> {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/user/" +this.state.id,
         {
@@ -105,9 +116,12 @@ class UpdateScreen extends Component{
           console.error(error);
         });
        }
+
+
        componentDidMount(){
            this.retrieveLoginData();
        }
+
 
     render(){
     return(
@@ -154,4 +168,6 @@ class UpdateScreen extends Component{
     );
     }
    }
+
+
    export default UpdateScreen;

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View,FlatList,StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+
+//styling
 const styles = StyleSheet.create({
     container: {
         flex:1,
@@ -20,6 +22,7 @@ const styles = StyleSheet.create({
       }
    
   });
+
 class FollowerScreen extends Component{
     constructor(props){
         super(props);
@@ -32,7 +35,7 @@ class FollowerScreen extends Component{
     static navigationOptions = {
         header: null
        }
-
+       //get id and token from async storage
        retrieveLoginData = async () => {
         try {
   
@@ -47,7 +50,7 @@ class FollowerScreen extends Component{
           console.log(error);
         }
       }
-
+      
       getFollowers = () => {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' +this.state.id + "/followers")
             .then((response) => response.json())

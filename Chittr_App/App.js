@@ -12,10 +12,11 @@ import RegisterScreen from './screens/RegisterScreen'
 
 class App extends Component{
   render() {
+    //Initially it renders my login screen
     return (<StackContainer/>);
   }
 }
-
+//This is my login screen stack navigator
 const StackLogin = createStackNavigator({
     LogIn: {
       screen: LoginScreen,
@@ -30,7 +31,7 @@ const StackLogin = createStackNavigator({
 
 });
 
-
+//This is the rest of the app bottomTab navigator where home,post,profile and fpanel(follower panel)
 const AppTabNav = createBottomTabNavigator({
 
   Home: {
@@ -48,7 +49,7 @@ const AppTabNav = createBottomTabNavigator({
   
 });
 
-
+//I created a stack that combines the Log in stack and the bottomTab so I can navigate between the stack and bottomTab and the initial screen is my login stack
 const StackSwitch = createStackNavigator({
   LogIn: {
     screen : StackLogin

@@ -3,6 +3,7 @@ import { Text, View,TouchableOpacity,StyleSheet,TextInput,Alert,Image } from 're
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 
+//styling
 const styles = StyleSheet.create({
     
     container: {
@@ -49,7 +50,7 @@ class PostPictureScreen extends Component{
     static navigationOptions = {
         header: null
        }
-
+       //retrieve the id and token form ascyn storage (locally stored data)
        retrieveLoginData = async () => {
         try {
   
@@ -65,6 +66,10 @@ class PostPictureScreen extends Component{
         }
       }
 
+      /**
+       * Uploads the picture that the user has chosen whether camera or from the library
+       * the body has the photo details which is retreive form the response of takePicture()
+       */
       uploadPhoto = () => {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/user/photo" ,
           {
@@ -86,38 +91,48 @@ class PostPictureScreen extends Component{
             console.error(error);
           });
     }
+
+    /**
+     * To take or select from library an image, I have chosen the image=picker library and used 
+     * their github reccomended example and modified it to take a picture and select form library
+     * once the image is selected the image-picker gets the response which has the image information
+     * and set it to the photo state. The source is the picture that the user has taken or chosen form the libary
+     * and it is displayed to them.
+     */
       takePicture =  () => {
    
-        const options = {
-        title: 'Select option',
-        storageOptions: {
-        skipBackup: true,
-        path: 'images',
-        },
-    };
-    
-    ImagePicker.showImagePicker(options, (response) => {
-        console.log('Response = ', response);
-    
-        if (response.didCancel) {
-        console.log('User cancelled image picker');
-        } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-        } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        } else {
-        const source = { uri: response.uri };
+            const options = {
+            title: 'Select option',
+            storageOptions: {
+            skipBackup: true,
+            path: 'images',
+                },
+            };
         
-        this.setState({
-            photo: response,
-            source: source
-        });
+            ImagePicker.showImagePicker(options, (response) => {
+                console.log('Response = ', response);
+            
+                if (response.didCancel) {
+                console.log('User cancelled image picker');
+                } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+                } else {
+                const source = { uri: response.uri };
+                
+                this.setState({
+                    photo: response,
+                    source: source
+                });
+                }
+            });
         }
-    });
-}
+
     componentDidMount() {
         this.retrieveLoginData();
     }
+
     render(){
         const {source} = this.state
     return(
@@ -146,4 +161,5 @@ class PostPictureScreen extends Component{
     );
     }
    }
+   
    export default PostPictureScreen;

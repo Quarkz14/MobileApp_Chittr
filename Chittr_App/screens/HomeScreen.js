@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet,Alert,Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+
+//styling
 const styles = StyleSheet.create({
     container : {
        flex: 1,
@@ -47,7 +49,8 @@ const styles = StyleSheet.create({
     logoutBtn: {
         backgroundColor: '#3AA18D',
         borderRadius:7,
-        
+        margin:10
+
     }
    
   });
@@ -72,15 +75,24 @@ class HomeScreen extends Component {
         header: null
     }
 
+    //gets chits of the followed users by providing the authorization token
     getChits =   () => {
-        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=50')
+        console.log("get chits token" + this.state.token);
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=50',
+        {
+            method:'GET',
+            headers: {
+                'X-Authorization': this.state.token,
+            }
+        }
+        
+        )
             .then((response) => response.json())
             .then((responseJson) => {
                 this.setState({
                     isLoading: false,
                     chitsListData: responseJson,
                 });
-                this.retrieveData();
                 this.setState({
                     refreshing: false
                 })
@@ -88,12 +100,13 @@ class HomeScreen extends Component {
                 console.log(error);
             });
     }
+
     componentDidMount() {
-        this.getChits();
         this.retrieveData();
         this.retrieveProfileData();
     }
 
+    //gets the id and token form the local storage
     retrieveData= async () => {
         try{
             const  idIncoming = await AsyncStorage.getItem('id',(error,item) => console.log( ' home id: ' + item));
@@ -104,12 +117,14 @@ class HomeScreen extends Component {
             
             this.setState({token: token});
             this.setState({id: id});
+            this.getChits();
             this.getUserPhoto();
         }catch(error){
             console.log(error);
         }
     }
-    //Get data form the profile 
+
+    //Get data from async storage
     retrieveProfileData = async() => {
         try{
             const name = await AsyncStorage.getItem('name',(error,item) => console.log( ' Profile name ' + item));
@@ -123,7 +138,8 @@ class HomeScreen extends Component {
             console.log(error);
         }
     }
-    
+
+    //gets the token form the state and logs the user out
     logout = () => {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/logout",
           {
@@ -147,6 +163,8 @@ class HomeScreen extends Component {
             console.error(error);
           });
     }
+
+    //it should get the photo of the user but when he user isn't created the default image will remain even if a new one is posted
     getUserPhoto = () => {
         console.log("ID of getPhot" + this.state.id)
         return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo')
@@ -158,6 +176,8 @@ class HomeScreen extends Component {
                   console.log(error);
               });
       }
+
+      //refreshes the flatlist by calling getChits again
       handleRefresh = () => {
           
           this.setState({
@@ -166,7 +186,15 @@ class HomeScreen extends Component {
           this.getChits();
           
       }
-    
+
+      //when the flatlist is empty it displays a text to the user
+    emptyList= () => {
+        return(
+            <View>
+                <Text>You need followers to see their chits</Text>
+            </View>
+        )
+    }
     render() {
         const {photo} = this.state
         if (this.state.isLoading) {
@@ -205,6 +233,7 @@ class HomeScreen extends Component {
                     keyExtractor={item => item.chit_id.toString()}
                     refreshing = {this.state.refreshing}
                     onRefresh={this.handleRefresh}
+                    ListEmptyComponent={this.emptyList}
                     
                 />
                 </View>

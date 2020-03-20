@@ -8,6 +8,7 @@ import DraftScreen from './DraftScreen'
 import { createStackNavigator} from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
 
+//styling
 const styles = StyleSheet.create({
     text : {
         flexDirection: "row",
@@ -41,12 +42,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderWidth: 2,
         borderColor: '#fff'
-        
-
     },
     logoutBtn: {
         backgroundColor: '#3AA18D',
-        borderRadius:7
+        borderRadius:7,
+        margin:10
     },
     postContainer:{
         flexDirection: "row",
@@ -60,9 +60,32 @@ const styles = StyleSheet.create({
         alignSelf: "flex-end",
         paddingRight: 45
     },
-
-   
-   
+    cameraLocationContainer: {
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        margin:20
+    },
+    picText : {
+        backgroundColor: '#3AA18D',
+        borderRadius: 4,
+    },
+    locText: {
+        backgroundColor: '#3AA18D',
+        borderRadius: 4,
+    },
+    draftContainer : {
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        margin:10
+    },
+    saveDraft : {
+        backgroundColor: '#3AA18D',
+        borderRadius: 4,
+    },
+    draft: {
+        backgroundColor: '#3AA18D',
+        borderRadius: 4,
+    }
   });
 
 class PostScreen extends Component{
@@ -91,6 +114,7 @@ class PostScreen extends Component{
         header: null
        }
 
+       //get token and id form local storage
        retrieveUserInfo = async() => {
            try{
                 const  idIncoming = await AsyncStorage.getItem('id',(error,item) => console.log( ' post id: ' + item));
@@ -112,6 +136,14 @@ class PostScreen extends Component{
            }
        }
 
+
+       /**
+        * Posts a chit with the chit_content containing the user textinput
+        * The user details are retrieved form the local storage and the timestamp
+        * uses the javascript Date funtion
+        * If the user chooses to uplaod a photo then the uploadPhoto receives the chit_id once
+        * the chit is posted and attaches the photo with the chit
+        */
        Chit =  () => {
         console.log(this.state.chit_content + this.state.longitude  + this.state.latitude);
     
@@ -157,6 +189,9 @@ class PostScreen extends Component{
           });
       }
 
+      /**
+       * Uploads a photo to the chit that the user is going to send
+       */
       uploadPhoto = (chit_id) => {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/chits/"+ chit_id +"/photo" ,
           {
@@ -201,11 +236,17 @@ class PostScreen extends Component{
             console.error(error);
           });
     }
-    //code from image-picker github
+    /**
+     * To take or select from library an image, I have chosen the image=picker library and used 
+     * their github reccomended example and modified it to take a picture and select form library
+     * once the image is selected the image-picker gets the response which has the image information
+     * and set it to the photo state. The source is the picture that the user has taken or chosen from the libary
+     * and it is displayed to them.
+     */
     takePicture =  () => {
    
                     const options = {
-                    title: 'Select Avatar',
+                    title: 'Select option',
                     storageOptions: {
                     skipBackup: true,
                     path: 'images',
@@ -231,7 +272,10 @@ class PostScreen extends Component{
                     }
                 });
     }
-
+    /**
+     * The use of geolocation-service package allows to get the coordinates
+     * of the user and saves it as a location, latitude and longitude
+     */
     findCoordinates = () => {
        
         Geolocation.getCurrentPosition(
@@ -255,6 +299,9 @@ class PostScreen extends Component{
         }
         );
         };
+        /**
+         * It requires the permission of the user to get access to the location
+         */
      requestLocationPermission = async() => {
             try {
             const granted = await PermissionsAndroid.request(
@@ -289,8 +336,9 @@ class PostScreen extends Component{
         
        
     }
+    //displays the user profile picture
     getUserPhoto = () => {
-        console.log("ID of getPhot" + this.state.id)
+        console.log("ID of getPhoto" + this.state.id)
         return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo')
             .then((response) =>{
                 this.setState({profile:response})
@@ -300,15 +348,27 @@ class PostScreen extends Component{
                   console.log(error);
               });
       }
-
-      saveDraft = () => {
-          let chit_content = this.state.chit_content;
+      //undone and needs work
+      saveDraft =  async() => {
+          
             try{
-                await AsyncStorage.setItem('chitDraft', chit_content);
+                
+                console.log("Saved this " + this.state.chit_content)
+                let chit = {
+                    "chit_content" : this.state.chit_content
+                };
+                let chitSon = JSON.stringify(chit);
+                await AsyncStorage.setItem('chitDraft', chitSon);
+                this.setState({chit_content: ''})
+                Alert.alert("Draft saved");
+                
             }catch(error) {
                 console.log(error);
+                Alert.alert("Draft not saved :(");
             }
       }
+
+
     render(){
         const {profile} = this.state
     return(
@@ -345,24 +405,30 @@ class PostScreen extends Component{
         >
             <Text style={styles.btnText}>Post Chit</Text>
         </TouchableOpacity>
+        <View style={styles.cameraLocationContainer}>
         <TouchableOpacity
         onPress={this.takePicture}
         >
-        <Text>Attach a picture!</Text>
+        <Text style={styles.picText}>Attach a picture!</Text>
         </TouchableOpacity>
         <TouchableOpacity
             onPress={this.findCoordinates}
         >
-        <Text>Add Location</Text>
+        <Text style={styles.locText}>Add Location</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-            <Text>Save Draft</Text>
+        </View>
+        <View style={styles.draftContainer}>
+        <TouchableOpacity
+            onPress={this.saveDraft}
+        >
+            <Text style={styles.saveDraft}>Save Draft</Text>
         </TouchableOpacity>
         <TouchableOpacity
          onPress={() => this.props.navigation.navigate('DraftScreen')}
         >
-            <Text>Drafts</Text>
+            <Text style={styles.draft}>Drafts</Text>
         </TouchableOpacity>
+        </View>
     
     </View>
     
@@ -371,7 +437,8 @@ class PostScreen extends Component{
     );
     }
    }
-
+   
+   //stack navigator to go to teh draft screen
    const PostActions = createStackNavigator ({
     PostScreen : {
         screen: PostScreen
