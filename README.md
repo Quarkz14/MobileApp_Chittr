@@ -39,3 +39,7 @@ npm install react-native-image-picker
 npm install react-native-geolocation-service
 ```
 2.Once all these libraries are installed you are ready to use the app.
+3.Then run the command below to display the app on android emulator 
+```
+npx react-native run-android
+```
